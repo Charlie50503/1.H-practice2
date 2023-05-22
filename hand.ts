@@ -1,9 +1,9 @@
 import { Card } from "./card";
 
 export class Hand {
-  private _cards: Card[];
+  private _cards: Card[] = [];
 
-  size: number;
+  size: number = 0;
 
   constructor(cards: Card[]) {
     this.cards = this.cards;
