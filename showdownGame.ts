@@ -1,3 +1,4 @@
+import { Deck } from './deck';
 import { CommandLine } from './playAction/commandLine';
 import { Randomly } from './playAction/radomly';
 import { AI } from './player/ai';
@@ -10,10 +11,18 @@ export class ShowdownGame {
   players: Player[] = [];
 
   globalRoundCount: number = 13;
+  private deck!: Deck;
+
+  constructor(deck: Deck) {
+    this.deck = deck;
+  }
   async start() {
     // 玩家（P1~P4）為自己取名。
     await this.createPlayers();
     rl.close();
+    this.deck.shuffle();
+    console.log(this.deck.cards);
+    
     // 初始化牌堆，含有52張牌。
     // 牌堆進行洗牌。
   }
