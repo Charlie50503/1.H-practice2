@@ -6,18 +6,7 @@ export class Deck {
   cards: Card[] = [];
 
   constructor() {
-    // 建立牌組 52 張卡
-    for (let suit in Suit) {
-      if (isNaN(Number(suit))) {
-        for (let rank in Rank) {
-          if (!isNaN(Number(rank))) {
-            this.cards.push(new Card(Suit[suit as keyof typeof Suit], Rank[rank as keyof typeof Rank]));
-          }
-        }
-      }
-      console.log(this.cards);
-      
-    }
+    this.initDeck();
   }
   // 洗牌 使用 Fisher-Yates Shuffle 算法
   shuffle() {
@@ -34,6 +23,26 @@ export class Deck {
       this.cards[i] = t;
     }
   }
+  // 建立牌組 52 張卡
+  initDeck() {
+    for (let suit in Suit) {
+      if (!isNaN(Number(suit))) {
+        for (let rank in Rank) {
+          if (!isNaN(Number(rank))) {
+            this.cards.push(
+              new Card(
+                Suit[suit as keyof typeof Suit],
+                Rank[rank as keyof typeof Rank]
+              )
+            );
+          }
+        }
+      }
+      console.log(this.cards);
+      console.log(this.cards.length);
+    }
+  }
 
+  // TODO 接下來實現抽牌
   drawCard() {}
 }
