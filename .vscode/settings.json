@@ -50,10 +50,25 @@
     ],
     "page": [
       {
-        "label": "首頁"
+        "label": "showdownGame"
       },
       {
-        "label": "子頁面"
+        "label": "player"
+      },
+      {
+        "label": "hand"
+      },
+      {
+        "label": "deck"
+      },
+      {
+        "label": "index"
+      },
+      {
+        "label": "card"
+      },
+      {
+        "label": "round"
       },
       {
         "label": "vs code"
