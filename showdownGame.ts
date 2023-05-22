@@ -19,6 +19,7 @@ export class ShowdownGame {
   async start() {
     // 玩家（P1~P4）為自己取名。
     await this.createPlayers();
+    // 關閉 command line input
     rl.close();
     this.deck.shuffle();
     console.log(this.deck.cards);
