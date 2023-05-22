@@ -3,9 +3,9 @@ import { Rank } from "./interfaces/rank";
 import { Suit } from "./interfaces/suit";
 
 export class Card {
-  private _suit: Suit;
+  private _suit!: Suit;
 
-  private _rank: Rank;
+  private _rank!: Rank;
 
 
   constructor(suit: Suit, rank: Rank) {
