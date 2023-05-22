@@ -21,11 +21,10 @@ export class ShowdownGame {
     await this.createPlayers();
     // 關閉 command line input
     rl.close();
-    this.deck.shuffle();
-    console.log(this.deck.cards);
-    
     // 初始化牌堆，含有52張牌。
     // 牌堆進行洗牌。
+    this.deck.shuffle();
+    console.log(this.deck.cards);
   }
 
   nextRound() {
