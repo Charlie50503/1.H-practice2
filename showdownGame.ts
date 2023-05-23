@@ -127,15 +127,15 @@ export class ShowdownGame {
 
   createPlayer(index: number): Promise<Player> {
     return new Promise((resolve, reject) => {
-      rl.question(`請輸入第${index}位玩家名稱：`, (name) => {
+      rl.question(`請輸入第${index}位玩家名稱：`, (name: string) => {
         rl.question(
           '這是一個普通玩家還是AI玩家（輸入 "一般" 或 "AI"）：',
-          (type) => {
+          (type:string) => {
             let player: Player | null = null;
             if (type === 'AI') {
-              player = new AI(name, this, index);
+              player = new AI(name, index);
             } else if (type === '一般') {
-              player = new Human(name, this, index);
+              player = new Human(name, index);
             } else {
               reject(new Error("輸入的玩家類型無效。請輸入 '一般' 或 'AI'。"));
               return;
