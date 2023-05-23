@@ -20,25 +20,25 @@ export type SuitType =
 
 
 export type Suit = {
-  value: SuitValue;
+  value: number;
   type: SuitType;
 };
 
 export const suits:Suit[] = [
   {
-    value: new SuitValue(1),
+    value: new SuitValue(1).value,
     type:'Clubs'
   },
   {
-    value: new SuitValue(2),
+    value: new SuitValue(2).value,
     type:'Diamonds'
   },
   {
-    value: new SuitValue(3),
+    value: new SuitValue(3).value,
     type:'Hearts'
   },
   {
-    value: new SuitValue(4),
+    value: new SuitValue(4).value,
     type:'Spades'
   },
 ]
