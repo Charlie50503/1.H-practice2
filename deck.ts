@@ -38,4 +38,8 @@ export class Deck {
     console.log(this.cards)
     console.log(this.cards.length)
   }
+
+  drawCard(): Card {
+    return this.cards.pop() as Card;
+  }
 }
