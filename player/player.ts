@@ -13,19 +13,15 @@ export class Player {
 
   exchangeHand!: ExchangeHand;
 
-  showdownGame: ShowdownGame;
-
   playerId: number;
 
   constructor(
     name: string,
-    showdownGame: ShowdownGame,
     hand: Hand,
     playerId: number
   ) {
     this.isExchangedHards = false;
     this.point = 0;
-    this.showdownGame = showdownGame;
     this.nameHimself(name);
     this.hand = hand;
     this.playerId = playerId;
