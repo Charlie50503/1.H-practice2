@@ -34,7 +34,7 @@ export class ShowdownGame {
 
   async startGame() {
     for (let index = 0; index < this.globalRoundCount; index++) {
-      await this.oneRound();
+      await this.runOneRound();
     }
     // 遊戲結束，計算並顯示最終勝者
     let maxPoints = Math.max(...this.players.map((p) => p.point));
@@ -60,7 +60,7 @@ export class ShowdownGame {
     // 計算最多分數的玩家為勝者，顯示勝者的名稱。
   }
 
-  async oneRound() {
+  async runOneRound() {
     const round = new Round();
     await Promise.all(
       this.players.map(async (player) => {
