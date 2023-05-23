@@ -5,7 +5,7 @@ import { HumanHand } from './hand/humanHand';
 import { AI } from './player/ai';
 import { Human } from './player/human';
 import { Player } from './player/player';
-import { Round } from './round';
+import { PlayCard, Round } from './round';
 import rl from './utils/readline';
 
 export class ShowdownGame {
@@ -64,16 +64,12 @@ export class ShowdownGame {
     const round = new Round();
     await Promise.all(
       this.players.map(async (player) => {
-        const playerCard = {
-          playerId: player.playerId,
-          card: await player.hand.showCard().catch((error) => {
-            console.log(`玩家${player.name}選擇了無效的牌：${error}`);
-            // 這裡你需要決定如何處理錯誤，例如讓玩家重新選擇牌
-            return this.reselectCard(player);
-          }),
-        };
-        // 結束輸入
-        // await rl.close();
+        const card = await player.hand.showCard().catch((error) => {
+          console.log(`玩家${player.name}選擇了無效的牌：${error}`);
+          // 這裡你需要決定如何處理錯誤，例如讓玩家重新選擇牌
+          return this.reselectCard(player);
+        });
+        const playerCard = new PlayCard(player.playerId,card)
         round.addPlayCard(playerCard);
       })
     );
