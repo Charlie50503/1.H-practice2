@@ -1,5 +1,5 @@
 import { ShowdownGame } from './../showdownGame';
-import { Hand } from '../hand';
+import { Hand } from '../hand/hand';
 import { PlayAction } from '../playAction/playAction';
 import { ExchangeHand } from './exchangeHands';
 import { Card } from '../card';
@@ -15,27 +15,28 @@ export class Player {
 
   exchangeHand!: ExchangeHand;
 
-  showdownGame:ShowdownGame;
+  showdownGame: ShowdownGame;
 
-  constructor(name:string,playAction: PlayAction,showdownGame:ShowdownGame) {
+  playerId: number;
+
+  constructor(
+    name: string,
+    playAction: PlayAction,
+    showdownGame: ShowdownGame,
+    hand: Hand,
+    playerId: number
+  ) {
     this.playAction = playAction;
-    // this.hand = hand;
     this.isExchangedHards = false;
     this.point = 0;
     this.showdownGame = showdownGame;
     this.nameHimself(name);
-  }
-
-  setHand(cards: Card[]){
-    this.hand = new Hand(cards);
+    this.hand = hand;
+    this.playerId = playerId;
   }
 
   nameHimself(name: string) {
     this.name = name;
-  }
-
-  takeTurn() {
-    this.showdownGame.nextRoundIndex();
   }
 
   doExchangeHands(exchangee: Player) {
