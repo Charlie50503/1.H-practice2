@@ -1,10 +1,7 @@
 import { Card } from './card';
 import { Deck } from './deck';
 import { AIHand } from './hand/aiHand';
-import { Hand } from './hand/hand';
 import { HumanHand } from './hand/humanHand';
-import { CommandLine } from './playAction/commandLine';
-import { Randomly } from './playAction/radomly';
 import { AI } from './player/ai';
 import { Human } from './player/human';
 import { Player } from './player/player';
@@ -136,15 +133,9 @@ export class ShowdownGame {
           (type) => {
             let player: Player | null = null;
             if (type === 'AI') {
-              player = new AI(name, new Randomly(), this, new AIHand(), index);
+              player = new AI(name, this, index);
             } else if (type === '一般') {
-              player = new Human(
-                name,
-                new CommandLine(),
-                this,
-                new HumanHand(),
-                index
-              );
+              player = new Human(name, this, index);
             } else {
               reject(new Error("輸入的玩家類型無效。請輸入 '一般' 或 'AI'。"));
               return;
