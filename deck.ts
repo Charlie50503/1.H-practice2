@@ -1,6 +1,6 @@
 import { Card } from './card';
-import { Rank } from './interfaces/rank';
-import { Suit } from './interfaces/suit';
+import { Rank, ranks } from './interfaces/rank';
+import { Suit, suits } from './interfaces/suit';
 
 export class Deck {
   cards: Card[] = [];
@@ -25,24 +25,17 @@ export class Deck {
   }
   // 建立牌組 52 張卡
   initDeck() {
-    for (let suit in Suit) {
-      if (!isNaN(Number(suit))) {
-        for (let rank in Rank) {
-          if (!isNaN(Number(rank))) {
-            this.cards.push(
-              new Card(
-                Suit[suit as keyof typeof Suit],
-                Rank[rank as keyof typeof Rank]
-              )
-            );
-          }
-        }
-      }
-      console.log(this.cards);
-      console.log(this.cards.length);
-    }
+    suits.forEach(suit => {
+      ranks.forEach(rank => {
+        this.cards.push(
+          new Card(
+            suit,
+            rank
+          )
+        );
+      })
+    });
+    console.log(this.cards)
+    console.log(this.cards.length)
   }
-
-  // TODO 接下來實現抽牌
-  drawCard() {}
 }
