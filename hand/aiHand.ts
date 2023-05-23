@@ -2,7 +2,7 @@ import { Card } from '../card';
 import { Hand } from './hand';
 
 export class AIHand extends Hand {
-  showCard():Promise<Card> {
+  showCard(): Promise<Card> {
     if (this.cards.length === 0) {
       throw new Error('牌組已空，無法再抽牌');
     }

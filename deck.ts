@@ -1,6 +1,6 @@
 import { Card } from './card';
-import { Rank, ranks } from './interfaces/rank';
-import { Suit, suits } from './interfaces/suit';
+import { ranks } from './interfaces/rank';
+import { suits } from './interfaces/suit';
 
 export class Deck {
   cards: Card[] = [];
@@ -25,18 +25,13 @@ export class Deck {
   }
   // 建立牌組 52 張卡
   initDeck() {
-    suits.forEach(suit => {
-      ranks.forEach(rank => {
-        this.cards.push(
-          new Card(
-            suit,
-            rank
-          )
-        );
-      })
+    suits.forEach((suit) => {
+      ranks.forEach((rank) => {
+        this.cards.push(new Card(suit, rank));
+      });
     });
-    console.log(this.cards)
-    console.log(this.cards.length)
+    console.log(this.cards);
+    console.log(this.cards.length);
   }
 
   drawCard(): Card {

@@ -1,12 +1,10 @@
 import { ShowdownGame } from './../showdownGame';
 import { Hand } from '../hand/hand';
-import { PlayAction } from '../playAction/playAction';
 import { ExchangeHand } from './exchangeHands';
 import { Card } from '../card';
 
 export class Player {
   name!: string;
-  playAction: PlayAction;
   hand!: Hand;
 
   isExchangedHards: boolean;
@@ -21,12 +19,10 @@ export class Player {
 
   constructor(
     name: string,
-    playAction: PlayAction,
     showdownGame: ShowdownGame,
     hand: Hand,
     playerId: number
   ) {
-    this.playAction = playAction;
     this.isExchangedHards = false;
     this.point = 0;
     this.showdownGame = showdownGame;
