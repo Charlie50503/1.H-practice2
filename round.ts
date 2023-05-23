@@ -31,6 +31,6 @@ export class Round {
         };
       }
     });
-    return maxPointPlayer.playerId
+    return maxPointPlayer.playerId;
   }
 }
