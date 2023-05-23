@@ -3,4 +3,9 @@ import { ShowdownGame } from './showdownGame';
 
 const showdownGame = new ShowdownGame(new Deck());
 
-showdownGame.start();
+async function main(){
+  await showdownGame.initGame();
+  await showdownGame.startGame();
+}
+
+main();
