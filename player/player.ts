@@ -1,3 +1,4 @@
+import { Card } from '../card';
 import { ExchangeHands } from '../exchangeHands';
 import { Hand } from '../hand/hand';
 import rl from '../utils/readline';
@@ -41,4 +42,5 @@ export abstract class Player {
 
   abstract choiceDoExchangeHands(): Promise<boolean>;
   abstract choiceExchangee(players: Player[]): Promise<Player>;
+  abstract showCard(): Promise<Card | null>;
 }

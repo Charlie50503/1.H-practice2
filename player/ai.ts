@@ -1,3 +1,4 @@
+import { Card } from '../card';
 import { AIHand } from '../hand/aiHand';
 import { Player, PlayerType } from './player';
 
@@ -42,6 +43,17 @@ export class AI extends Player {
         return reject('沒找到對應玩家');
       }
       return resolve(exchangee);
+    });
+  }
+
+  showCard(): Promise<Card | null> {
+    
+    return new Promise((resolve) => {
+      if (this.hand.cards.length === 0) {
+        resolve(null);
+      }
+      const index = Math.floor(Math.random() * this.hand.cards.length);
+      resolve(this.hand.drawCard(index));
     });
   }
 }

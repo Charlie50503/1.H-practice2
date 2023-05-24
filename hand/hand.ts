@@ -7,7 +7,7 @@ export abstract class Hand {
 
   constructor() {}
 
-  abstract showCard(): Promise<Card>;
+  // abstract showCard(): Promise<Card>;
 
   getSize() {
     return this.cards.length;
@@ -33,5 +33,13 @@ export abstract class Hand {
     this.cards.splice(index, 1);
 
     return drawnCard;
+  }
+
+  viewCards(): void {
+    this.cards.forEach((card, index) => {
+      console.log(
+        `手牌編號:${index}, 花色:${card.suit.type}, 數字:${card.rank.type}`
+      );
+    });
   }
 }

@@ -1,3 +1,4 @@
+import { Card } from '../card';
 import { HumanHand } from '../hand/humanHand';
 import rl from '../utils/readline';
 import { Player, PlayerType } from './player';
@@ -37,6 +38,23 @@ export class Human extends Player {
           return resolve(false);
         }
         return reject('無效輸入');
+      });
+    });
+  }
+
+  showCard(): Promise<Card | null> {
+    this.hand.viewCards();
+    return new Promise((resolve, reject) => {
+      if (this.hand.cards.length === 0) {
+        resolve(null);
+      }
+      rl.question(`請選擇要出的牌 : `, (index:string) => {
+        if (isNaN(Number(index))) {
+          return reject('請輸入數字');
+        } else if (Number(index) > this.hand.cards.length - 1) {
+          return reject('無效編號');
+        }
+        return resolve(this.hand.drawCard(Number(index)));
       });
     });
   }
