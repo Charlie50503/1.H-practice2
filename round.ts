@@ -15,6 +15,7 @@ export class Round {
   showdown() {
     let winnerCard = new WinnerCard();
     this.playCards.forEach((playCard) => {
+      console.log(`玩家編號:${playCard.playerId} 總分 ${playCard.sumPoints()}`)
       if (winnerCard.point < playCard.sumPoints()) {
         winnerCard.setPlayerId(playCard.playerId)
         winnerCard.setPoint(playCard.sumPoints())
