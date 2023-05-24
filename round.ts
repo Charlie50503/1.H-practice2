@@ -1,30 +1,6 @@
 import { Card } from './card';
-
-export class PlayCard {
-  playerId: number;
-  card: Card;
-
-  constructor(playerId: number, card: Card) {
-    this.playerId = playerId;
-    this.card = card
-  }
-  sumPoints() {
-    return this.card.rank.value + this.card.suit.value;
-  }
-}
-
-export class WinnerCard {
-  playerId: number = -1;
-  point: number = 0;
-
-  setPlayerId(playerId: number) {
-    this.playerId = playerId
-  }
-
-  setPoint(point: number) {
-    this.point = point
-  }
-}
+import { PlayCard } from './PlayCard';
+import { WinnerCard } from './winnerCard';
 
 export class Round {
   playCards: PlayCard[] = [];

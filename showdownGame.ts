@@ -1,11 +1,10 @@
 import { Card } from './card';
 import { Deck } from './deck';
-import { AIHand } from './hand/aiHand';
-import { HumanHand } from './hand/humanHand';
+import { PlayCard } from './PlayCard';
 import { AI } from './player/ai';
 import { Human } from './player/human';
 import { Player } from './player/player';
-import { PlayCard, Round } from './round';
+import { Round } from './round';
 import rl from './utils/readline';
 
 export class ShowdownGame {
