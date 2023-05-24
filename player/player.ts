@@ -2,7 +2,13 @@ import { ExchangeHands } from '../exchangeHands';
 import { Hand } from '../hand/hand';
 import rl from '../utils/readline';
 
+export enum PlayerType {
+  AI,
+  HUMAN,
+}
+
 export abstract class Player {
+  abstract type: PlayerType.AI | PlayerType.HUMAN;
   name!: string;
   hand: Hand;
 
@@ -33,7 +39,6 @@ export abstract class Player {
     this.exchangeHands.exchange();
   }
 
-
-  abstract choiceDoExchangeHands(): Promise<boolean>
-  abstract choiceExchangee(players: Player[]): Promise<Player>
+  abstract choiceDoExchangeHands(): Promise<boolean>;
+  abstract choiceExchangee(players: Player[]): Promise<Player>;
 }

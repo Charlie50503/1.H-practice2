@@ -1,14 +1,14 @@
 import { HumanHand } from '../hand/humanHand';
 import rl from '../utils/readline';
-import { Player } from './player';
+import { Player, PlayerType } from './player';
 
 export class Human extends Player {
+  type = PlayerType.HUMAN;
   constructor(name: string, playerId: number) {
     const hand = new HumanHand();
     super(name, hand, playerId);
   }
 
-  
   choiceExchangee(players: Player[]): Promise<Player> {
     return new Promise((resolve, reject) => {
       rl.question(`請輸入要被交換的玩家編號 : `, (id: string) => {
