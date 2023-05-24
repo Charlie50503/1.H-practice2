@@ -30,8 +30,8 @@ export class Deck {
         this.cards.push(new Card(suit, rank));
       });
     });
-    console.log(this.cards);
-    console.log(this.cards.length);
+    // console.log(this.cards);
+    // console.log(this.cards.length);
   }
 
   drawCard(): Card {
