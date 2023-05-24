@@ -1,12 +1,12 @@
 import { Card } from '../card';
-import { HumanHand } from '../hand/humanHand';
+import { Hand } from '../hand/hand';
 import rl from '../utils/readline';
 import { Player, PlayerType } from './player';
 
 export class Human extends Player {
   type = PlayerType.HUMAN;
   constructor(name: string, playerId: number) {
-    const hand = new HumanHand();
+    const hand = new Hand();
     super(name, hand, playerId);
   }
 

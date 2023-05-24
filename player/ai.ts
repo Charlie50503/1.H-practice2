@@ -1,11 +1,11 @@
 import { Card } from '../card';
-import { AIHand } from '../hand/aiHand';
+import { Hand } from '../hand/hand';
 import { Player, PlayerType } from './player';
 
 export class AI extends Player {
   type = PlayerType.AI;
   constructor(name: string, playerId: number) {
-    const hand = new AIHand();
+    const hand = new Hand();
     super(name, hand, playerId);
   }
 
