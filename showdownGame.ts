@@ -1,6 +1,6 @@
 import { Card } from './card';
 import { Deck } from './deck';
-import { PlayCard } from './PlayCard';
+import { PlayCard } from './playCard';
 import { AI } from './player/ai';
 import { Human } from './player/human';
 import { Player } from './player/player';

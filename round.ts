@@ -1,5 +1,5 @@
 import { Card } from './card';
-import { PlayCard } from './PlayCard';
+import { PlayCard } from './playCard';
 import { WinnerCard } from './winnerCard';
 
 export class Round {
