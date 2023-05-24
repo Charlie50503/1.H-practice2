@@ -26,10 +26,10 @@ export class ExchangeHands {
     this.exchangee.hand = this.exchanger.hand
     this.exchanger.hand = tempHand
   }
-  canExchange(): boolean {
-    // 檢查是否還能進行交換
-    return this.currentExchangeTurns < this.validExchangeTurns;
-  }
+  // canExchange(): boolean {
+  //   // 檢查是否還能進行交換
+  //   return this.currentExchangeTurns < this.validExchangeTurns;
+  // }
   countDown(){
     this.validExchangeTurns--;
   }

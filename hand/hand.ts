@@ -1,17 +1,9 @@
 import { Card } from '../card';
 
-export abstract class Hand {
+export class Hand {
   private _cards: Card[] = [];
 
-  size: number = 0;
-
   constructor() {}
-
-  // abstract showCard(): Promise<Card>;
-
-  getSize() {
-    return this.cards.length;
-  }
 
   public get cards(): Card[] {
     return this._cards;
