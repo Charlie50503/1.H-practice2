@@ -35,7 +35,13 @@ export class AI extends Player {
       // 從剩餘數字中隨機選取一個
       const index = Math.floor(Math.random() * playerIdList.length);
       const targetPlayerId = playerIdList[index];
-      return players.find((player) => player.playerId === targetPlayerId);
+      const exchangee = players.find(
+        (player) => player.playerId === targetPlayerId
+      );
+      if (!exchangee) {
+        return reject('沒找到對應玩家');
+      }
+      return resolve(exchangee);
     });
   }
 }
