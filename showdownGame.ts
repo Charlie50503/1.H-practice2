@@ -3,7 +3,7 @@ import { Deck } from './deck';
 import { PlayCard } from './playCard';
 import { AI } from './player/ai';
 import { Human } from './player/human';
-import { Player } from './player/player';
+import { Player, PlayerType } from './player/player';
 import { Round } from './round';
 import rl from './utils/readline';
 
@@ -19,7 +19,10 @@ export class ShowdownGame {
   }
   async initGame() {
     // 玩家（P1~P4）為自己取名。
-    await this.createPlayers();
+    await this.createPlayers().catch((error) => {
+      console.log(error);
+      return this.createPlayers();
+    });
     // 關閉 command line input
     // await rl.close();
     // 初始化牌堆，含有52張牌。
@@ -61,17 +64,31 @@ export class ShowdownGame {
 
   async runOneRound() {
     const round = new Round();
-    await Promise.all(
-      this.players.map(async (player) => {
-        const card = await player.hand.showCard().catch((error) => {
-          console.log(`玩家${player.name}選擇了無效的牌：${error}`);
-          // 這裡你需要決定如何處理錯誤，例如讓玩家重新選擇牌
-          return this.reselectCard(player);
+    for (const player of this.players) {
+      if (!player.isExchangedHards) {
+        const isGoChoiceDoExchangeHands = await player.choiceDoExchangeHands().catch((error) => {
+          console.log(error);
+          return this.reselectChoiceDoExchangee(player);
         });
-        const playerCard = new PlayCard(player.playerId,card)
+        if (isGoChoiceDoExchangeHands) {
+          if (player.type === PlayerType.HUMAN) {
+            await this.viewPlayers();
+          }
+          const exchangee = await player.choiceExchangee(this.players).catch((error) => {
+            return this.reselectExchangee(player);
+          });
+          player.doExchangeHands(exchangee);
+        }
+      }
+      const card = await player.showCard().catch((error) => {
+        console.log(`玩家${player.name}選擇了無效的牌：${error}`);
+        return this.reselectCard(player);
+      });
+      if (card) {
+        const playerCard = new PlayCard(player.playerId, card)
         round.addPlayCard(playerCard);
-      })
-    );
+      }
+    }      
 
     const winnerId = round.showdown();
     let winner = this.players.find((player) => {
@@ -80,20 +97,59 @@ export class ShowdownGame {
     if (winner) {
       winner.point++;
 
-      console.log(`玩家${winner.name} 贏得 1 分`);
+      console.log(`玩家編號${winner.playerId} 玩家名稱:${winner.name} 贏得 1 分`);
     }
   }
 
-  async reselectCard(player: Player): Promise<Card> {
-    console.log(`玩家${player.name}選擇了無效的牌，請重新選擇。`);
-
-    return player.hand.showCard().catch((error) => {
-      console.log(`再次選擇了無效的牌：${error}`);
-      // 這裡你可能需要增加一些條件來判斷何時應該停止重新選擇
-      // 例如，你可以設定一個重新選擇的上限，超過這個上限就拋出一個錯誤，或者給予玩家一個預設的卡牌
-      return this.reselectCard(player);
-    });
+  async reselectCard(player: Player): Promise<Card | null> {
+    return this.reselectWithErrorHandling(
+      player, 
+      () => player.showCard(), 
+      '選擇了無效的牌'
+    );
   }
+
+  async reselectChoiceDoExchangee(player: Player): Promise<boolean> {
+    return this.reselectWithErrorHandling(
+      player, 
+      () => player.choiceDoExchangeHands(), 
+      '選擇了無效玩家代號'
+    );
+  }
+  
+  async reselectExchangee(player: Player): Promise<Player> {
+    return this.reselectWithErrorHandling(
+      player, 
+      () => player.choiceExchangee(this.players), 
+      '選擇了無效玩家代號'
+    );
+  }
+  // async reselectCard(player: Player): Promise<Card> {
+  //   console.log(`玩家${player.name}選擇了無效的牌，請重新選擇。`);
+
+  //   return player.hand.showCard().catch((error) => {
+  //     console.log(`再次選擇了無效的牌：${error}`);
+  //     return this.reselectCard(player);
+  //   });
+  // }
+
+  // async reselectChoiceDoExchangee(player: Player): Promise<boolean> {
+  //   console.log(`玩家${player.name}選擇了無效玩家代號，請重新選擇。`);
+
+  //   return player.choiceDoExchangeHands().catch((error) => {
+  //     console.log(`再次選擇了無效的玩家代號：${error}`);
+  //     return this.reselectChoiceDoExchangee(player);
+  //   });
+  // }
+
+  // async reselectExchangee(player: Player): Promise<Player> {
+  //   console.log(`玩家${player.name}選擇了無效玩家代號，請重新選擇。`);
+
+  //   return player.choiceExchangee(this.players).catch((error) => {
+  //     console.log(`再次選擇了無效的玩家代號：${error}`);
+  //     return this.reselectExchangee(player);
+  //   });
+  // }
 
   addPlayer(player: Player) {
     this.players.push(player);
@@ -102,7 +158,11 @@ export class ShowdownGame {
   async createPlayers() {
     try {
       for (let index = 1; index <= this.playerSize; index++) {
-        this.addPlayer(await this.createPlayer(index));
+        const player = await this.createPlayer(index).catch((error) => {
+          console.log(error);
+          return this.createPlayer(index);
+        })
+        this.addPlayer(player as Player);
       }
     } catch (error) {
       console.log(error);
@@ -116,8 +176,15 @@ export class ShowdownGame {
         player.hand.addCard(this.deck.drawCard());
       });
     }
-    console.log(this.players[0].hand.cards);
-    console.log(this.players[0].hand.cards.length);
+
+    this.players.forEach((player) => {
+      console.log("-------------------------")
+      console.log(`玩家${player.name}的手牌：`);
+      player.hand.viewCards();
+      console.log("-------------------------")
+    });
+    // console.log(this.players[0].hand.cards);
+    // console.log(this.players[0].hand.cards.length);
   }
 
   createPlayer(index: number): Promise<Player> {
@@ -132,7 +199,7 @@ export class ShowdownGame {
             } else if (type === '一般') {
               player = new Human(name, index);
             } else {
-              reject(new Error("輸入的玩家類型無效。請輸入 '一般' 或 'AI'。"));
+              reject("輸入的玩家類型無效。請輸入 '一般' 或 'AI'。");
               return;
             }
             resolve(player);
@@ -140,5 +207,24 @@ export class ShowdownGame {
         );
       });
     });
+  }
+
+  async viewPlayers(){
+    this.players.forEach((player) => {
+      console.log("玩家編號: ",player.playerId,"玩家名稱: ",player.name)
+    })
+    
+  }
+
+
+  async reselectWithErrorHandling<T>(player: Player, operation: () => Promise<T>, errorMsg: string): Promise<T> {
+    console.log(`玩家${player.name}${errorMsg}，請重新選擇。`);
+  
+    try {
+      return await operation();
+    } catch (error) {
+      console.log(`再次選擇了無效的選擇：${error}`);
+      return this.reselectWithErrorHandling(player, operation, errorMsg);
+    }
   }
 }
