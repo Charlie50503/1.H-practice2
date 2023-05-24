@@ -1,30 +1,26 @@
-import { ShowdownGame } from './../showdownGame';
+import { ExchangeHands } from '../exchangeHands';
 import { Hand } from '../hand/hand';
-import { ExchangeHand } from './exchangeHands';
-import { Card } from '../card';
+import rl from '../utils/readline';
 
-export class Player {
+export abstract class Player {
   name!: string;
-  hand!: Hand;
+  hand: Hand;
 
   isExchangedHards: boolean;
 
   point: number;
 
-  exchangeHand!: ExchangeHand;
+  exchangeHands!: ExchangeHands;
 
   playerId: number;
 
-  constructor(
-    name: string,
-    hand: Hand,
-    playerId: number
-  ) {
+  constructor(name: string, hand: Hand, playerId: number) {
     this.isExchangedHards = false;
     this.point = 0;
     this.nameHimself(name);
     this.hand = hand;
     this.playerId = playerId;
+    this.exchangeHands = new ExchangeHands(3, this);
   }
 
   nameHimself(name: string) {
@@ -32,7 +28,12 @@ export class Player {
   }
 
   doExchangeHands(exchangee: Player) {
-    this.exchangeHand = new ExchangeHand(this, exchangee);
-    // this.exchangeHand.counterDown;
+    this.isExchangedHards = true;
+    this.exchangeHands.setExchangee(exchangee);
+    this.exchangeHands.exchange();
   }
+
+
+  abstract choiceDoExchangeHands(): Promise<boolean>
+  abstract choiceExchangee(players: Player[]): Promise<Player>
 }
