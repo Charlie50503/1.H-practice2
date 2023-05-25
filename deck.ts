@@ -9,7 +9,7 @@ export class Deck {
     this.initDeck();
   }
   // 洗牌 使用 Fisher-Yates Shuffle 算法
-  shuffle() {
+  public shuffle() {
     let m = this.cards.length,
       t,
       i;
@@ -23,18 +23,17 @@ export class Deck {
       this.cards[i] = t;
     }
   }
-  // 建立牌組 52 張卡
-  initDeck() {
-    suits.forEach((suit) => {
-      ranks.forEach((rank) => {
-        this.cards.push(new Card(suit, rank));
-      });
-    });
-    // console.log(this.cards);
-    // console.log(this.cards.length);
-  }
 
-  drawCard(): Card {
+  public drawCard(): Card {
     return this.cards.pop() as Card;
   }
+
+    // 建立牌組 52 張卡
+    private initDeck() {
+      suits.forEach((suit) => {
+        ranks.forEach((rank) => {
+          this.cards.push(new Card(suit, rank));
+        });
+      });
+    }
 }

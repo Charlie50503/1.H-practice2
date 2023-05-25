@@ -10,7 +10,7 @@ export class Human extends Player {
     super(name, hand, playerId);
   }
 
-  choiceExchangee(players: Player[]): Promise<Player> {
+  public choiceExchangee(players: Player[]): Promise<Player> {
     return new Promise((resolve, reject) => {
       rl.question(`請輸入要被交換的玩家編號 : `, (id: string) => {
         if (isNaN(Number(id))) {
@@ -29,7 +29,7 @@ export class Human extends Player {
     });
   }
 
-  choiceDoExchangeHands(): Promise<boolean> {
+  public choiceDoExchangeHands(): Promise<boolean> {
     return new Promise((resolve, reject) => {
       rl.question(`是否要交換手牌 是:Y/否:N : `, (answer: string) => {
         if (answer === 'Y') {
@@ -42,7 +42,7 @@ export class Human extends Player {
     });
   }
 
-  showCard(): Promise<Card | null> {
+  public showCard(): Promise<Card | null> {
     this.hand.viewCards();
     return new Promise((resolve, reject) => {
       if (this.hand.cards.length === 0) {

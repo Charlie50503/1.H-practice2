@@ -27,7 +27,7 @@ export class Hand {
     return drawnCard;
   }
 
-  viewCards(): void {
+  public viewCards(): void {
     this.cards.forEach((card, index) => {
       console.log(
         `手牌編號:${index}, 花色:${card.suit.type}, 數字:${card.rank.type}`

@@ -30,17 +30,17 @@ export abstract class Player {
     this.exchangeHands = new ExchangeHands(3, this);
   }
 
-  nameHimself(name: string) {
+  public nameHimself(name: string) {
     this.name = name;
   }
 
-  doExchangeHands(exchangee: Player) {
+  public doExchangeHands(exchangee: Player) {
     this.isExchangedHards = true;
     this.exchangeHands.setExchangee(exchangee);
     this.exchangeHands.exchange();
   }
 
-  abstract choiceDoExchangeHands(): Promise<boolean>;
-  abstract choiceExchangee(players: Player[]): Promise<Player>;
-  abstract showCard(): Promise<Card | null>;
+  public abstract choiceDoExchangeHands(): Promise<boolean>;
+  public abstract choiceExchangee(players: Player[]): Promise<Player>;
+  public abstract showCard(): Promise<Card | null>;
 }

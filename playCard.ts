@@ -8,7 +8,7 @@ export class PlayCard {
     this.playerId = playerId;
     this.card = card
   }
-  sumPoints() {
+  public sumPoints() {
     return this.card.rank.value + this.card.suit.value;
   }
 }

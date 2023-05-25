@@ -17,7 +17,7 @@ export class ShowdownGame {
   constructor(deck: Deck) {
     this.deck = deck;
   }
-  async initGame() {
+  public async initGame() {
     // 玩家（P1~P4）為自己取名。
     await this.createPlayers().catch((error) => {
       console.log(error);
@@ -34,7 +34,7 @@ export class ShowdownGame {
     //
   }
 
-  async startGame() {
+  public async startGame() {
     for (let index = 0; index < this.globalRoundCount; index++) {
       await this.runOneRound();
     }
@@ -43,26 +43,9 @@ export class ShowdownGame {
     let finalWinner = this.players.find((p) => p.point === maxPoints);
     console.log(`遊戲結束，最終勝者是： 玩家 ${finalWinner?.name}`);
     await rl.close();
-    // P1~P4輪流：
-    // TODO 決定是否使用「交換手牌」特權。
-    // 出一張牌（其他玩家無法看見這張牌）。
-    // 顯示P1~P4各出的牌。
-    // 比較P1~P4出的牌，最大的牌獲得勝利，該玩家分數加一。
-
-    // 特權使用：
-
-    // 若玩家選擇使用「交換手牌」特權：
-    // 選擇要與哪位玩家（自己以外）交換手牌。
-    // 雙方的手牌交換。
-    // 三回合後，雙方的手牌交換回來。
-
-    // 遊戲結束：
-
-    // 13回合後，每個玩家都已經出完牌，遊戲結束。
-    // 計算最多分數的玩家為勝者，顯示勝者的名稱。
   }
 
-  async runOneRound() {
+  private async runOneRound() {
     const round = new Round();
     for (const player of this.players) {
       if (!player.isExchangedHards) {
@@ -101,7 +84,7 @@ export class ShowdownGame {
     }
   }
 
-  async reselectCard(player: Player): Promise<Card | null> {
+  private async reselectCard(player: Player): Promise<Card | null> {
     return this.reselectWithErrorHandling(
       player, 
       () => player.showCard(), 
@@ -109,7 +92,7 @@ export class ShowdownGame {
     );
   }
 
-  async reselectChoiceDoExchangee(player: Player): Promise<boolean> {
+  private async reselectChoiceDoExchangee(player: Player): Promise<boolean> {
     return this.reselectWithErrorHandling(
       player, 
       () => player.choiceDoExchangeHands(), 
@@ -117,45 +100,19 @@ export class ShowdownGame {
     );
   }
   
-  async reselectExchangee(player: Player): Promise<Player> {
+  private async reselectExchangee(player: Player): Promise<Player> {
     return this.reselectWithErrorHandling(
       player, 
       () => player.choiceExchangee(this.players), 
       '選擇了無效玩家代號'
     );
   }
-  // async reselectCard(player: Player): Promise<Card> {
-  //   console.log(`玩家${player.name}選擇了無效的牌，請重新選擇。`);
 
-  //   return player.hand.showCard().catch((error) => {
-  //     console.log(`再次選擇了無效的牌：${error}`);
-  //     return this.reselectCard(player);
-  //   });
-  // }
-
-  // async reselectChoiceDoExchangee(player: Player): Promise<boolean> {
-  //   console.log(`玩家${player.name}選擇了無效玩家代號，請重新選擇。`);
-
-  //   return player.choiceDoExchangeHands().catch((error) => {
-  //     console.log(`再次選擇了無效的玩家代號：${error}`);
-  //     return this.reselectChoiceDoExchangee(player);
-  //   });
-  // }
-
-  // async reselectExchangee(player: Player): Promise<Player> {
-  //   console.log(`玩家${player.name}選擇了無效玩家代號，請重新選擇。`);
-
-  //   return player.choiceExchangee(this.players).catch((error) => {
-  //     console.log(`再次選擇了無效的玩家代號：${error}`);
-  //     return this.reselectExchangee(player);
-  //   });
-  // }
-
-  addPlayer(player: Player) {
+  private addPlayer(player: Player) {
     this.players.push(player);
   }
 
-  async createPlayers() {
+  private async createPlayers() {
     try {
       for (let index = 1; index <= this.playerSize; index++) {
         const player = await this.createPlayer(index).catch((error) => {
@@ -169,7 +126,7 @@ export class ShowdownGame {
     }
   }
 
-  doDrawCard() {
+  private doDrawCard() {
     // 抽牌 抽到 52 張抽完為止
     for (let index = 0; index < 13; index++) {
       this.players.forEach((player) => {
@@ -187,7 +144,7 @@ export class ShowdownGame {
     // console.log(this.players[0].hand.cards.length);
   }
 
-  createPlayer(index: number): Promise<Player> {
+  private createPlayer(index: number): Promise<Player> {
     return new Promise((resolve, reject) => {
       rl.question(`請輸入第${index}位玩家名稱：`, (name: string) => {
         rl.question(
@@ -209,7 +166,7 @@ export class ShowdownGame {
     });
   }
 
-  async viewPlayers(){
+  private async viewPlayers(){
     this.players.forEach((player) => {
       console.log("玩家編號: ",player.playerId,"玩家名稱: ",player.name)
     })
@@ -217,7 +174,7 @@ export class ShowdownGame {
   }
 
 
-  async reselectWithErrorHandling<T>(player: Player, operation: () => Promise<T>, errorMsg: string): Promise<T> {
+  private async reselectWithErrorHandling<T>(player: Player, operation: () => Promise<T>, errorMsg: string): Promise<T> {
     console.log(`玩家${player.name}${errorMsg}，請重新選擇。`);
   
     try {
