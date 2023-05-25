@@ -42,7 +42,7 @@ export class ExchangeHands {
   public incrementExchangeTurns(){
     if(this.isExchanging){
       this.currentExchangeTurns++;
-      console.log("目前交換回合",this.currentExchangeTurns);
+      console.log(`玩家編號 ${this.exchanger.playerId} 目前交換回合: ${this.currentExchangeTurns}`);
     }
   }
   public setExchangee(exchangee:Player){

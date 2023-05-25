@@ -9,8 +9,6 @@ export class Hand {
     return this._cards;
   }
   public set cards(value: Card[]) {
-    if (this.cards.length == 4) {
-    }
     this._cards = value;
   }
 
