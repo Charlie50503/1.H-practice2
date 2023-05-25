@@ -15,11 +15,19 @@ export class ExchangeHands {
     if(!this.exchangee){
       throw Error("請先設定被交換的玩家")
     }
+    console.log("--------------");
+    console.log("被交換玩家的手牌");
+    console.log(this.exchangee.hand.viewCards());
+
+    console.log("要交換玩家的手牌");
+    console.log(this.exchanger.hand.viewCards());
+    
+    console.log("--------------");
     const tempHand = this.exchanger.hand
     this.exchanger.hand = this.exchangee.hand
     this.exchangee.hand = tempHand
   }
-  public changeBack(){
+  public switchHandsBack(){
     if(!this.exchangee){
       throw Error("請先設定被交換的玩家")
     }
@@ -27,13 +35,14 @@ export class ExchangeHands {
     this.exchangee.hand = this.exchanger.hand
     this.exchanger.hand = tempHand
   }
-  // canExchange(): boolean {
-  //   // 檢查是否還能進行交換
-  //   return this.currentExchangeTurns < this.validExchangeTurns;
-  // }
-  public countDown(){
+  isReadyToSwitchBack(): boolean {
+    // 檢查是否還能進行交換
+    return this.currentExchangeTurns >=  this.validExchangeTurns;
+  }
+  public incrementExchangeTurns(){
     if(this.isExchanging){
-      this.validExchangeTurns--;
+      this.currentExchangeTurns++;
+      console.log("目前交換回合",this.currentExchangeTurns);
     }
   }
   public setExchangee(exchangee:Player){

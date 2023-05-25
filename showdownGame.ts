@@ -49,17 +49,21 @@ export class ShowdownGame {
     const round = new Round();
     for (const player of this.players) {
       if (!player.isExchangedHards) {
-        const isGoChoiceDoExchangeHands = await player.choiceDoExchangeHands().catch((error) => {
-          console.log(error);
-          return this.reselectChoiceDoExchangee(player);
-        });
+        const isGoChoiceDoExchangeHands = await player
+          .choiceDoExchangeHands()
+          .catch((error) => {
+            console.log(error);
+            return this.reselectChoiceDoExchangee(player);
+          });
         if (isGoChoiceDoExchangeHands) {
           if (player.type === PlayerType.HUMAN) {
             await this.viewPlayers();
           }
-          const exchangee = await player.choiceExchangee(this.players).catch((error) => {
-            return this.reselectExchangee(player);
-          });
+          const exchangee = await player
+            .choiceExchangee(this.players)
+            .catch((error) => {
+              return this.reselectExchangee(player);
+            });
           player.doExchangeHands(exchangee);
         }
       }
@@ -68,10 +72,17 @@ export class ShowdownGame {
         return this.reselectCard(player);
       });
       if (card) {
-        const playerCard = new PlayCard(player.playerId, card)
+        const playerCard = new PlayCard(player.playerId, card);
         round.addPlayCard(playerCard);
       }
-    }      
+          
+      if(player.exchangeHands.isExchanging && !player.exchangeHands.isReadyToSwitchBack()) {
+        player.exchangeHands.incrementExchangeTurns();
+        if(player.exchangeHands.isReadyToSwitchBack()){
+          player.doExchangeHandsBack();
+        }
+      }
+    }
 
     const winnerId = round.showdown();
     let winner = this.players.find((player) => {
@@ -80,30 +91,32 @@ export class ShowdownGame {
     if (winner) {
       winner.point++;
 
-      console.log(`玩家編號${winner.playerId} 玩家名稱:${winner.name} 贏得 1 分`);
+      console.log(
+        `玩家編號${winner.playerId} 玩家名稱:${winner.name} 贏得 1 分`
+      );
     }
   }
 
   private async reselectCard(player: Player): Promise<Card | null> {
     return this.reselectWithErrorHandling(
-      player, 
-      () => player.showCard(), 
+      player,
+      () => player.showCard(),
       '選擇了無效的牌'
     );
   }
 
   private async reselectChoiceDoExchangee(player: Player): Promise<boolean> {
     return this.reselectWithErrorHandling(
-      player, 
-      () => player.choiceDoExchangeHands(), 
+      player,
+      () => player.choiceDoExchangeHands(),
       '選擇了無效玩家代號'
     );
   }
-  
+
   private async reselectExchangee(player: Player): Promise<Player> {
     return this.reselectWithErrorHandling(
-      player, 
-      () => player.choiceExchangee(this.players), 
+      player,
+      () => player.choiceExchangee(this.players),
       '選擇了無效玩家代號'
     );
   }
@@ -118,7 +131,7 @@ export class ShowdownGame {
         const player = await this.createPlayer(index).catch((error) => {
           console.log(error);
           return this.createPlayer(index);
-        })
+        });
         this.addPlayer(player as Player);
       }
     } catch (error) {
@@ -135,10 +148,10 @@ export class ShowdownGame {
     }
 
     this.players.forEach((player) => {
-      console.log("-------------------------")
+      console.log('-------------------------');
       console.log(`玩家${player.name}的手牌：`);
       player.hand.viewCards();
-      console.log("-------------------------")
+      console.log('-------------------------');
     });
     // console.log(this.players[0].hand.cards);
     // console.log(this.players[0].hand.cards.length);
@@ -149,7 +162,7 @@ export class ShowdownGame {
       rl.question(`請輸入第${index}位玩家名稱：`, (name: string) => {
         rl.question(
           '這是一個普通玩家還是AI玩家（輸入 "一般" 或 "AI"）：',
-          (type:string) => {
+          (type: string) => {
             let player: Player | null = null;
             if (type === 'AI') {
               player = new AI(name, index);
@@ -166,17 +179,19 @@ export class ShowdownGame {
     });
   }
 
-  private async viewPlayers(){
+  private async viewPlayers() {
     this.players.forEach((player) => {
-      console.log("玩家編號: ",player.playerId,"玩家名稱: ",player.name)
-    })
-    
+      console.log('玩家編號: ', player.playerId, '玩家名稱: ', player.name);
+    });
   }
 
-
-  private async reselectWithErrorHandling<T>(player: Player, operation: () => Promise<T>, errorMsg: string): Promise<T> {
+  private async reselectWithErrorHandling<T>(
+    player: Player,
+    operation: () => Promise<T>,
+    errorMsg: string
+  ): Promise<T> {
     console.log(`玩家${player.name}${errorMsg}，請重新選擇。`);
-  
+
     try {
       return await operation();
     } catch (error) {

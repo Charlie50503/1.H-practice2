@@ -43,6 +43,8 @@ export class Human extends Player {
   }
 
   public showCard(): Promise<Card | null> {
+    console.log(`玩家編號: ${this.playerId},玩家名稱: ${this.name}`);
+    
     this.hand.viewCards();
     return new Promise((resolve, reject) => {
       if (this.hand.cards.length === 0) {
