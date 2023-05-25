@@ -28,11 +28,11 @@ export class Round {
     if(player.isExchangedHands){
       return
     }
-    
+
     const isHandExchangeChosen = await this.reselectWithErrorHandling(
       player,
       () => player.chooseToExchangeHands(),
-      '選擇了無效玩家代號'
+      '輸入了無效內容'
     );
 
     if (isHandExchangeChosen) {
@@ -121,7 +121,7 @@ export class Round {
       return await operation();
     } catch (error) {
       console.log(`${error}`);
-      console.log(`玩家${player.name}${errorMsg}，請重新選擇。`);
+      console.log(`玩家${player.name} ${errorMsg}，請重新選擇。`);
       return this.reselectWithErrorHandling(player, operation, errorMsg);
     }
   }
