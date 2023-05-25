@@ -15,6 +15,7 @@ export class ShowdownGame {
   private deck!: Deck;
 
   constructor(deck: Deck) {
+    // 初始化牌堆，含有52張牌。
     this.deck = deck;
   }
   public async initGame() {
@@ -23,102 +24,22 @@ export class ShowdownGame {
       console.log(error);
       return this.createPlayers();
     });
-    // 關閉 command line input
-    // await rl.close();
-    // 初始化牌堆，含有52張牌。
     // 牌堆進行洗牌。
     await this.deck.shuffle();
     // 玩家抽牌
     await this.doDrawCard();
-
-    //
   }
 
   public async startGame() {
     for (let index = 0; index < this.globalRoundCount; index++) {
-      await this.runOneRound();
+      const round = new Round(this.players);
+      await round.startRound();
     }
     // 遊戲結束，計算並顯示最終勝者
     let maxPoints = Math.max(...this.players.map((p) => p.point));
     let finalWinner = this.players.find((p) => p.point === maxPoints);
     console.log(`遊戲結束，最終勝者是： 玩家 ${finalWinner?.name}`);
     await rl.close();
-  }
-
-  private async runOneRound() {
-    const round = new Round();
-    for (const player of this.players) {
-      if (!player.isExchangedHards) {
-        const isGoChoiceDoExchangeHands = await player
-          .choiceDoExchangeHands()
-          .catch((error) => {
-            console.log(error);
-            return this.reselectChoiceDoExchangee(player);
-          });
-        if (isGoChoiceDoExchangeHands) {
-          if (player.type === PlayerType.HUMAN) {
-            await this.viewPlayers();
-          }
-          const exchangee = await player
-            .choiceExchangee(this.players)
-            .catch((error) => {
-              return this.reselectExchangee(player);
-            });
-          player.doExchangeHands(exchangee);
-        }
-      }
-      const card = await player.showCard().catch((error) => {
-        console.log(`玩家${player.name}選擇了無效的牌：${error}`);
-        return this.reselectCard(player);
-      });
-      if (card) {
-        const playerCard = new PlayCard(player.playerId, card);
-        round.addPlayCard(playerCard);
-      }
-          
-      if(player.exchangeHands.isExchanging && !player.exchangeHands.isReadyToSwitchBack()) {
-        player.exchangeHands.incrementExchangeTurns();
-        if(player.exchangeHands.isReadyToSwitchBack()){
-          player.doExchangeHandsBack();
-        }
-      }
-    }
-
-    const winnerId = round.showdown();
-    let winner = this.players.find((player) => {
-      return player.playerId === winnerId;
-    });
-    if (winner) {
-      winner.point++;
-
-      console.log(
-        `玩家編號${winner.playerId} 玩家名稱:${winner.name} 贏得 1 分`
-      );
-    }
-  }
-
-  private async reselectCard(player: Player): Promise<Card | null> {
-    return this.reselectWithErrorHandling(
-      player,
-      () => player.showCard(),
-      '選擇了無效的牌'
-    );
-  }
-
-  private async reselectChoiceDoExchangee(player: Player): Promise<boolean> {
-    return this.reselectWithErrorHandling(
-      player,
-      () => player.choiceDoExchangeHands(),
-      '選擇了無效玩家代號'
-    );
-  }
-
-  private async reselectExchangee(player: Player): Promise<Player> {
-    return this.reselectWithErrorHandling(
-      player,
-      () => player.choiceExchangee(this.players),
-      '選擇了無效玩家代號'
-    );
   }
 
   private addPlayer(player: Player) {
@@ -153,8 +74,6 @@ export class ShowdownGame {
       player.hand.viewCards();
       console.log('-------------------------');
     });
-    // console.log(this.players[0].hand.cards);
-    // console.log(this.players[0].hand.cards.length);
   }
 
   private createPlayer(index: number): Promise<Player> {
@@ -177,26 +96,5 @@ export class ShowdownGame {
         );
       });
     });
-  }
-
-  private async viewPlayers() {
-    this.players.forEach((player) => {
-      console.log('玩家編號: ', player.playerId, '玩家名稱: ', player.name);
-    });
-  }
-
-  private async reselectWithErrorHandling<T>(
-    player: Player,
-    operation: () => Promise<T>,
-    errorMsg: string
-  ): Promise<T> {
-    console.log(`玩家${player.name}${errorMsg}，請重新選擇。`);
-
-    try {
-      return await operation();
-    } catch (error) {
-      console.log(`再次選擇了無效的選擇：${error}`);
-      return this.reselectWithErrorHandling(player, operation, errorMsg);
-    }
   }
 }

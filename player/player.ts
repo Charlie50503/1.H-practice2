@@ -1,5 +1,5 @@
 import { Card } from '../card';
-import { ExchangeHands } from '../exchangeHands';
+import { HandExchange } from '../handExchange';
 import { Hand } from '../hand/hand';
 import rl from '../utils/readline';
 
@@ -17,7 +17,7 @@ export abstract class Player {
 
   point: number;
 
-  exchangeHands!: ExchangeHands;
+  handExchange!: HandExchange;
 
   playerId: number;
 
@@ -27,7 +27,7 @@ export abstract class Player {
     this.nameHimself(name);
     this.hand = hand;
     this.playerId = playerId;
-    this.exchangeHands = new ExchangeHands(3, this);
+    this.handExchange = new HandExchange(3, this);
   }
 
   public nameHimself(name: string) {
@@ -35,20 +35,26 @@ export abstract class Player {
   }
 
   public doExchangeHands(exchangee: Player) {
-    console.log(`玩家編號: ${this.playerId},玩家名稱: ${this.name} 選擇與玩家編號「 ${exchangee.playerId}」交換手牌!`);
-    
+    console.log(
+      '玩家編號: ',
+      this.playerId,
+      '玩家名稱: ' + this.name + '選擇與玩家編號「 ',
+      exchangee.playerId,
+      '」交換手牌!'
+    );
+
     this.isExchangedHards = true;
-    this.exchangeHands.setIsExchanging(true);
-    this.exchangeHands.setExchangee(exchangee);
-    this.exchangeHands.exchange();
+    this.handExchange.setIsExchanging(true);
+    this.handExchange.setExchangee(exchangee);
+    this.handExchange.exchange();
   }
 
-  public doExchangeHandsBack(){
-    this.exchangeHands.switchHandsBack();
-    this.exchangeHands.setIsExchanging(false)
+  public doExchangeHandsBack() {
+    this.handExchange.switchHandsBack();
+    this.handExchange.setIsExchanging(false);
   }
 
-  public abstract choiceDoExchangeHands(): Promise<boolean>;
-  public abstract choiceExchangee(players: Player[]): Promise<Player>;
+  public abstract chooseToExchangeHands(): Promise<boolean>;
+  public abstract chooseExchangee(players: Player[]): Promise<Player>;
   public abstract showCard(): Promise<Card | null>;
 }

@@ -9,7 +9,7 @@ export class AI extends Player {
     super(name, hand, playerId);
   }
 
-  public choiceDoExchangeHands(): Promise<boolean> {
+  public chooseToExchangeHands(): Promise<boolean> {
     return new Promise((resolve, reject) => {
       const exchangeOptions = ['Y', 'N'];
 
@@ -24,7 +24,7 @@ export class AI extends Player {
     });
   }
 
-  public choiceExchangee(players: Player[]): Promise<Player> {
+  public chooseExchangee(players: Player[]): Promise<Player> {
     return new Promise((resolve, reject) => {
       let playerIdList = players.map((player) => player.playerId);
 
