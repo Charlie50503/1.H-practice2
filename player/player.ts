@@ -1,7 +1,6 @@
 import { Card } from '../card';
 import { HandExchange } from '../handExchange';
 import { Hand } from '../hand/hand';
-import rl from '../utils/readline';
 
 export enum PlayerType {
   AI,
@@ -13,7 +12,7 @@ export abstract class Player {
   name!: string;
   hand: Hand;
 
-  isExchangedHards: boolean;
+  isExchangedHands: boolean;
 
   point: number;
 
@@ -22,7 +21,7 @@ export abstract class Player {
   playerId: number;
 
   constructor(name: string, hand: Hand, playerId: number) {
-    this.isExchangedHards = false;
+    this.isExchangedHands = false;
     this.point = 0;
     this.nameHimself(name);
     this.hand = hand;
@@ -43,7 +42,7 @@ export abstract class Player {
       '」交換手牌!'
     );
 
-    this.isExchangedHards = true;
+    this.isExchangedHands = true;
     this.handExchange.setIsExchanging(true);
     this.handExchange.setExchangee(exchangee);
     this.handExchange.exchange();

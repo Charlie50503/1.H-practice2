@@ -11,11 +11,85 @@ export class Round {
     this.players = players;
   }
 
-  public addPlayCard(playCard: PlayCard) {
-    this.playCards.push(playCard);
+  public async startRound() {
+    for (const player of this.players) {
+      await this.handlePlayerTurn(player);
+    }
+    this.determineWinner();
   }
 
-  public showdown() {
+  private async handlePlayerTurn(player: Player) {
+    await this.exchangeTurn(player);
+    await this.showCardTurn(player);
+    this.switchExchangeHandsBackHandle(player)
+  }
+
+  private async exchangeTurn(player: Player){
+    if(player.isExchangedHands){
+      return
+    }
+    
+    const isHandExchangeChosen = await this.reselectWithErrorHandling(
+      player,
+      () => player.chooseToExchangeHands(),
+      '選擇了無效玩家代號'
+    );
+
+    if (isHandExchangeChosen) {
+      if (player.type === PlayerType.HUMAN) {
+        await this.viewPlayers();
+      }
+
+      const exchangee = await this.reselectWithErrorHandling(
+        player,
+        () => player.chooseExchangee(this.players),
+        '選擇了無效玩家代號'
+      );
+
+      player.doExchangeHands(exchangee);
+    }
+  }
+
+  private async showCardTurn(player: Player) {
+    const card = await this.reselectWithErrorHandling(
+      player,
+      () => player.showCard(),
+      '選擇了無效的牌'
+    );
+
+    if (card) {
+      const playerCard = new PlayCard(player.playerId, card);
+      this.playCards.push(playerCard);
+    }
+  }
+
+  private switchExchangeHandsBackHandle(player: Player) {
+    if (
+      player.handExchange.isExchanging &&
+      !player.handExchange.isReadyToSwitchBack()
+    ) {
+      player.handExchange.incrementExchangeTurns();
+      if (player.handExchange.isReadyToSwitchBack()) {
+        player.doExchangeHandsBack();
+      }
+    }
+  }
+
+  private determineWinner() {
+    const winnerId = this.showdown();
+    const winner = this.players.find((player) => player.playerId === winnerId);
+
+    if (winner) {
+      winner.point++;
+      console.log(
+        '玩家編號: ',
+        winner.playerId,
+        '玩家名稱: ' + winner.name + ' 贏得 1 分'
+      );
+    }
+  }
+
+  private showdown() {
     let winnerCard = new WinnerCard();
     this.playCards.forEach((playCard) => {
       console.log(
@@ -32,109 +106,12 @@ export class Round {
     return winnerCard.playerId;
   }
 
-  public async startRound() {
-    for (const player of this.players) {
-      if (!player.isExchangedHards) {
-        const isHandExchangeChosen = await this.reselectWithErrorHandling(
-          player,
-          () => player.chooseToExchangeHands(),
-          '選擇了無效玩家代號'
-        );
-
-        // const isHandExchangeChosen = await player
-        //   .chooseToExchangeHands()
-        //   .catch((error) => {
-        //     console.log(error);
-        //     return this.reselectChooseToExchangeHands(player);
-        //   });
-        if (isHandExchangeChosen) {
-          if (player.type === PlayerType.HUMAN) {
-            await this.viewPlayers();
-          }
-          const exchangee = await this.reselectWithErrorHandling(
-            player,
-            () => player.chooseExchangee(this.players),
-            '選擇了無效玩家代號'
-          );
-          // const exchangee = await player
-          //   .chooseExchangee(this.players)
-          //   .catch((error) => {
-          //     return this.reselectExchangee(player);
-          //   });
-          player.doExchangeHands(exchangee);
-        }
-      }
-      const card = await this.reselectWithErrorHandling(
-        player,
-        () => player.showCard(),
-        '選擇了無效的牌'
-      );
-      // const card = await player.showCard().catch((error) => {
-      //   console.log(`玩家${player.name}選擇了無效的牌：${error}`);
-      //   return this.reselectCard(player);
-      // });
-      if (card) {
-        const playerCard = new PlayCard(player.playerId, card);
-        this.addPlayCard(playerCard);
-      }
-
-      if (
-        player.handExchange.isExchanging &&
-        !player.handExchange.isReadyToSwitchBack()
-      ) {
-        player.handExchange.incrementExchangeTurns();
-        if (player.handExchange.isReadyToSwitchBack()) {
-          player.doExchangeHandsBack();
-        }
-      }
-    }
-
-    const winnerId = this.showdown();
-    let winner = this.players.find((player) => {
-      return player.playerId === winnerId;
-    });
-    if (winner) {
-      winner.point++;
-
-      console.log(
-        '玩家編號: ',
-        winner.playerId,
-        '玩家名稱: ' + winner.name + ' 贏得 1 分'
-      );
-    }
-  }
-
   private async viewPlayers() {
     this.players.forEach((player) => {
       console.log('玩家編號: ', player.playerId, '玩家名稱: ', player.name);
     });
   }
 
-  private async reselectCard(player: Player): Promise<Card | null> {
-    return this.reselectWithErrorHandling(
-      player,
-      () => player.showCard(),
-      '選擇了無效的牌'
-    );
-  }
-
-  private async reselectChooseToExchangeHands(
-    player: Player
-  ): Promise<boolean> {
-    return this.reselectWithErrorHandling(
-      player,
-      () => player.chooseToExchangeHands(),
-      '選擇了無效玩家代號'
-    );
-  }
-
-  private async reselectExchangee(player: Player): Promise<Player> {
-    return this.reselectWithErrorHandling(
-      player,
-      () => player.chooseExchangee(this.players),
-      '選擇了無效玩家代號'
-    );
-  }
   private async reselectWithErrorHandling<T>(
     player: Player,
     operation: () => Promise<T>,
