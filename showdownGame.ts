@@ -27,6 +27,8 @@ export class ShowdownGame {
     await this.deck.shuffle();
     // 玩家抽牌
     await this.doDrawCard();
+    // 顯示玩家卡牌
+    this.viewPlayersHands();
   }
 
   public async startGame() {
@@ -45,13 +47,6 @@ export class ShowdownGame {
         player.hand.addCard(this.deck.drawCard());
       });
     }
-
-    this.players.forEach((player) => {
-      console.log('-------------------------');
-      console.log(`玩家${player.name}的手牌：`);
-      player.hand.viewCards();
-      console.log('-------------------------');
-    });
   }
 
   private declareWinner() {
@@ -59,5 +54,14 @@ export class ShowdownGame {
     let finalWinners = this.players.filter((p) => p.point === maxPoints);
     let winnersNames = finalWinners.map((w) => w.name).join(', ');
     console.log(`遊戲結束，最終勝者是： 玩家 ${winnersNames}`);
+  }
+
+  private viewPlayersHands(){
+    this.players.forEach((player) => {
+      console.log('-------------------------');
+      console.log(`玩家${player.name}的手牌：`);
+      player.hand.viewCards();
+      console.log('-------------------------');
+    });
   }
 }
