@@ -54,7 +54,6 @@ export class PlayerFactory {
     if (type === 'AI') {
       return new AI(name, index);
     } else {
-      // 在這裡我們已經確保 type 只能是 "一般" 或 "AI"，所以可以安全地假設這裡是 "一般"
       return new Human(name, index);
     }
   }

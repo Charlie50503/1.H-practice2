@@ -1,9 +1,5 @@
-import { Card } from './card';
 import { Deck } from './deck';
-import { PlayCard } from './playCard';
-import { AI } from './player/ai';
-import { Human } from './player/human';
-import { Player, PlayerType } from './player/player';
+import { Player } from './player/player';
 import { PlayerFactory } from './player/playerFactory';
 import { Round } from './round';
 import rl from './utils/readline';
